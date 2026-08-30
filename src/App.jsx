@@ -8,6 +8,8 @@ function App() {
   const [nombre, setNombre] = useState('')
   const [pass, setPass] = useState('')
   const [idEdit, setIdEdit] = useState(null)
+  const [nombreLogin, setNombreLogin] = useState('');
+  const [passLogin, setPassLogin] = useState('');
   useEffect(() => {
     fetch("http://localhost:3000/usuarios")
       .then(response => response.json())
@@ -15,6 +17,27 @@ function App() {
         setUsuarios(data);
       });
   }, []);
+
+  const login = (a) => {
+    a.preventDefault();
+    fetch("http://localhost:3000/login", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        nombre: nombreLogin,
+        pass: passLogin
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+    })
+    setNombreLogin('');
+    setPassLogin('')
+  }
+
 
   const cargarDatos = (a) => {
     a.preventDefault();
@@ -115,6 +138,12 @@ function App() {
         <input value={nombre} onChange={(a) => setNombre(a.target.value)} type="text" placeholder="Nombre" />
         <input value={pass} onChange={(a) => setPass(a.target.value)} type="text" placeholder="Pass" />
         <button type="submit" className={idEdit ? 'btn btn-warning' : "btn btn-success"} >{idEdit ? 'Actualizar' : 'Agregar'}</button>
+      </form>
+
+      <form onSubmit={login}>
+        <input placeholder="Nombre" onChange={(a) => setNombreLogin(a.target.value)} value={nombreLogin} type="text" />
+        <input placeholder="Password" onChange={(a) => setPassLogin(a.target.value)} value={passLogin} type="text" />
+        <button type="submit" className="btn btn-primary">Iniciar Sesion</button>
       </form>
     </>
   )
